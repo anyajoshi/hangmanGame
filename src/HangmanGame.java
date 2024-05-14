@@ -30,9 +30,7 @@ public class HangmanGame {
         for (int i = 0; i < discoveredChars.length; i++) {
             discoveredChars[i] = ' ';
         }
-        currentCategoryIcon = currentWordInfo.getCategory().getCategoryIcon();
     }
-
 
     public boolean guess(char letter) {
         boolean isCorrect = false;
@@ -115,6 +113,10 @@ public class HangmanGame {
 
     public String getCurrentWord() {
         return this.currentWord;
+    }
+
+    public String setCurrentCategory(String c) {
+        return this.currentCategory = c;
     }
 
 }

@@ -29,8 +29,8 @@ public class GameData {
 
                     // Swap arr[j] and arr[j+1]
                     temp = categories.get(j);
-                    categories.set(j,categories.get(j + 1));
-                    categories.set((j + 1),temp);
+                    categories.set(j, categories.get(j + 1));
+                    categories.set((j + 1), temp);
                     swapped = true;
                 }
             }
