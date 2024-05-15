@@ -4,6 +4,9 @@ import java.awt.event.*;
 import java.net.URL;
 import java.awt.*;
 
+/**
+ * Creates the graphical user interface for the hangman game.
+ */
 public class GUI implements ActionListener {
     private JFrame frame;
     private JTextField inputField;
@@ -11,11 +14,15 @@ public class GUI implements ActionListener {
     private JButton guessButton, pickCategoryButton, retryButton, learnMoreBtn;
     private JLabel wordLabel, wordText, categoryLabel, categoryText, remaingAttemptsLabel,
             remaingAttemptsText, guessedLettersLabel, guessedLettersText, gameSuccessLabel, gameFailedLabel,
-            hangmanImageLabel, wordDescriptionLabel, learnMoreLabel;
+            hangmanImageLabel, wordDescriptionLabel, categoryIconLabel;
     private JComboBox categoryList;
     private int frameWidth = 700, frameHeight = 300;
 
     private HangmanGame game;
+
+    /**
+     * Constructs the GUI object and initializes the backend Hangman game.
+     */
 
     public GUI() {
 
@@ -25,10 +32,16 @@ public class GUI implements ActionListener {
 
     }
 
+    /**
+     * The main method to start the Hangman game GUI.
+     */
     public static void main(String[] args) {
         new GUI();
     }
 
+    /**
+     * Displays the category selection screen.
+     */
     private void showCategorySelectionScreen() {
 
         frame = new JFrame("Hangman Game: Select a Category");
@@ -73,6 +86,11 @@ public class GUI implements ActionListener {
         frame.setVisible(true);
     }
 
+    /**
+     * Displays the word guessing screen for the given category.
+     * 
+     * @param category - The given category.
+     */
     private void showWordGuessScreen(String category) {
         frame.dispose();
 
@@ -80,7 +98,7 @@ public class GUI implements ActionListener {
 
         frame = new JFrame("Hangman Game: Guess Word");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(frameWidth, frameHeight + 300);
+        frame.setSize(frameWidth + 300, frameHeight + 300);
         frame.setLayout(new BorderLayout());
 
         JPanel panelNorth = new JPanel();
@@ -98,7 +116,7 @@ public class GUI implements ActionListener {
 
         JPanel panelCenterLeft = new JPanel();
         JPanel panelCenterRight = new JPanel();
-        panelCenterRight.setLayout(new GridLayout(10, 1, 5, 5));
+        panelCenterRight.setLayout(new GridLayout(11, 1, 5, 5));
         panelCenterGrid.add(panelCenterLeft);
         panelCenterGrid.add(panelCenterRight);
 
@@ -152,9 +170,18 @@ public class GUI implements ActionListener {
         guessButton.addActionListener(this);
         inputPanel.add(guessButton);
 
+        JPanel panelCenterCategoryIcon = new JPanel();
+        categoryIconLabel = new JLabel();
+        // categoryIconLabel.setMinimumSize(new Dimension(40, 40));
+        // categoryIconLabel.setPreferredSize(new Dimension(40, 40));
+        // categoryIconLabel.setMaximumSize(new Dimension(40, 40));
+        panelCenter.add(categoryIconLabel);
+        panelCenter.setLayout(new FlowLayout(FlowLayout.CENTER));
+
         frame.add(panelNorth, BorderLayout.NORTH);
         frame.add(panelSouth, BorderLayout.SOUTH);
         frame.add(panelCenter, BorderLayout.CENTER);
+        // frame.add(panelCenterCategoryIcon, BorderLayout.CENTER);
 
         setGameState();
 
@@ -162,6 +189,9 @@ public class GUI implements ActionListener {
 
     }
 
+    /**
+     * Displays the game success screen when the word is correctly guessed.
+     */
     private void showGameSuccessScreen() {
         frame.dispose();
 
@@ -202,6 +232,10 @@ public class GUI implements ActionListener {
 
     }
 
+    /**
+     * Displays the game failure screen when the correct word is not guessed within
+     * the given tries.
+     */
     private void showGameFailedcreen() {
         frame.dispose();
 
@@ -241,12 +275,17 @@ public class GUI implements ActionListener {
 
     }
 
+    /**
+     * Updates the game state and checks if satisfied, the game completion
+     * conditions.
+     */
     private void setGameState() {
         setDiscoveredWordText();
         setCategoryText();
         setRemaingAttemptsText();
         setGuessedLettersText();
         setHangmanImage();
+        setCategoryIcon();
 
         if (game.isWordDiscovered()) {
             showGameSuccessScreen();
@@ -255,28 +294,55 @@ public class GUI implements ActionListener {
         }
     }
 
+    /**
+     * Sets the text displaying the discovered word.
+     */
     private void setDiscoveredWordText() {
         wordText.setText(game.getCurrentProgress());
     }
 
+    /**
+     * Sets the text displaying the category.
+     */
     private void setCategoryText() {
         categoryText.setText(game.getCurrentCategory());
     }
 
+    /**
+     * Sets the text displaying the remaining attempts.
+     */
     private void setRemaingAttemptsText() {
         remaingAttemptsText.setText(String.valueOf(game.getRemainingAttempts()));
     }
 
+    /**
+     * Sets the text displaying the already guessed letters.
+     */
     private void setGuessedLettersText() {
         guessedLettersText.setText(game.getGuessedLetters());
     }
 
+    /**
+     * Sets the hangman image based on the number of failed attempts.
+     */
     private void setHangmanImage() {
         int failedAttempts = 6 - game.getRemainingAttempts();
         URL u = getClass().getResource("resources/hm" + failedAttempts + ".jpeg");
         hangmanImageLabel.setIcon(new ImageIcon(u));
+
     }
 
+    /**
+     * Sets the category icon.
+     */
+    private void setCategoryIcon() {
+        URL u = game.getCurrentCategoryIcon();
+        categoryIconLabel.setIcon(new ImageIcon(u));
+    }
+
+    /**
+     * Manages output of button click events.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -299,10 +365,6 @@ public class GUI implements ActionListener {
             wordDescriptionLabel = new JLabel();
             moreInfoPanel.add(wordDescriptionLabel);
             wordDescriptionLabel.setText(game.getCurrentWordDescription());
-
-            // learnMoreLabel = new JLabel("Here is some more information about: " +
-            // game.getCurrentWord());
-            // moreInfoPanel.add(learnMoreLabel);
 
             modalFrame.getContentPane().add(moreInfoPanel);
             modalFrame.pack();
